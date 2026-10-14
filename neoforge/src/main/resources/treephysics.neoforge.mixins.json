@@ -9,6 +9,7 @@
     "compatibility.create.SawBlockEntityMixin",
     "compatibility.malum.LodestoneBlockFillerLayerMixin",
     "compatibility.malum.SoulwoodTreeFeatureMixin",
+    "compatibility.rocketnautics.GlobalSpacePhysicsHandlerMixin",
     "compatibility.spawn.DateTreeFeatureMixin"
   ],
   "client": [

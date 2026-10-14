@@ -107,8 +107,10 @@ public class FloodFillUtil {
                 for (ServerSubLevel subLevel : subLevels) {
                     SubLevelPhysicsSystem system = SubLevelPhysicsSystem.get(level);
                     RigidBodyHandle handle = system.getPhysicsHandle(subLevel);
-
-                    handle.addLinearAndAngularVelocity(velocity, torque);
+                    // Modded block updates during assembly can empty the new plot.
+                    if (handle.isValid()) {
+                        handle.addLinearAndAngularVelocity(velocity, torque);
+                    }
                 }
             }
 
@@ -153,8 +155,10 @@ public class FloodFillUtil {
             if(tree != null && !(TreePhysicsConfig.ROOTLESS_TREE_DETECTION.get() ? tree.hasRoot() || tree.hasDirt() : tree.hasRoot())) {
                 Set<BlockPos> treeBlocks = tree.getBlocks(TreePhysicsTags.TREE);
                 ServerSubLevel subLevel = SubLevelAssemblyHelper.assembleBlocks(level, pos, treeBlocks, new BoundingBox3i(pos, pos));
-                subLevels.add(subLevel);
-                manager.setTree(subLevel);
+                if (!subLevel.isRemoved()) {
+                    subLevels.add(subLevel);
+                    manager.setTree(subLevel);
+                }
 
                 Set<BlockPos> fallingBlocks = tree.getBlocks(TreePhysicsTags.FALLS_FROM_TREES);
                 for (BlockPos blockPos : fallingBlocks) {

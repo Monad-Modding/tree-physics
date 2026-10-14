@@ -40,6 +40,12 @@ neoForge {
             gameDirectory = project.file('runs/server')
 
         }
+        if (providers.gradleProperty('physicsRegressionTests').isPresent()) {
+            physicsRegression {
+                type = 'gameTestServer'
+                gameDirectory = project.file('runs/physics-regression')
+            }
+        }
     }
     mods {
         "${mod_id}" {
@@ -55,8 +61,12 @@ dependencies {
 
     compileOnly "dev.ryanhcode.sable-companion:sable-companion-common-$minecraft_version:$sable_companion_version"
     compileOnly "dev.ryanhcode.sable:sable-sable_rapier-$minecraft_version:$sable_version"
-    implementation("dev.ryanhcode.sable:sable-neoforge-${minecraft_version}:${sable_version}") {
-        exclude group: "foundry.veil"
+    if (providers.gradleProperty('physicsRegressionTests').isPresent()) {
+        implementation "maven.modrinth:sable:${providers.gradleProperty('physicsRegressionSable').getOrElse('1L6XJqnY')}"
+    } else {
+        implementation("dev.ryanhcode.sable:sable-neoforge-${minecraft_version}:${sable_version}") {
+            exclude group: "foundry.veil"
+        }
     }
 
     runtimeOnly("maven.modrinth:no-mans-land:1.5.5")
@@ -70,8 +80,19 @@ dependencies {
     compileOnly("com.simibubi.create:create-${minecraft_version}:${create_version}") { transitive = false }
     implementation("net.createmod.ponder:ponder-neoforge:${ponder_version}+mc${minecraft_version}")
 
+    if (providers.gradleProperty('physicsRegressionTests').isPresent()) {
+        runtimeOnly 'maven.modrinth:lets-do-vinery:ZywXpLC6'
+        runtimeOnly 'maven.modrinth:architectury-api:13.0.8+neoforge'
+    }
+
 }
 
 sourceSets.main.resources {
     srcDir generatedResources.absolutePath
+}
+
+// Keep the regression fixtures out of distributable builds.
+if (providers.gradleProperty('physicsRegressionTests').isPresent()) {
+    sourceSets.main.java.srcDir 'src/gametest/java'
+    sourceSets.main.resources.srcDir 'src/gametest/resources'
 }

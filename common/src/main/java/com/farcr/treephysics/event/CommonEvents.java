@@ -6,6 +6,7 @@ import com.farcr.treephysics.api.manager.TreeManager;
 import com.farcr.treephysics.api.manager.TreeSubLevelObserver;
 import com.farcr.treephysics.api.util.FloodFillUtil;
 import com.farcr.treephysics.api.util.TreeUtil;
+import com.farcr.treephysics.collision_callback.LeavesBlockCallback;
 import com.farcr.treephysics.index.TreePhysicsConfig;
 import dev.ryanhcode.sable.Sable;
 import dev.ryanhcode.sable.api.SubLevelAssemblyHelper;
@@ -77,6 +78,7 @@ public class CommonEvents {
     }
 
     public static void postPhysicsTick(SubLevelPhysicsSystem system, double timeStep) {
+        LeavesBlockCallback.flushPendingBreaks(system);
         ServerLevel level = system.getLevel();
         ServerTreeManager handler = ServerTreeManager.get(level);
         PhysicsPipeline pipeline = system.getPipeline();

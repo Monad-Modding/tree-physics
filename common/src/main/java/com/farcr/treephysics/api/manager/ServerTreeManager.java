@@ -58,6 +58,9 @@ public class ServerTreeManager extends SavedData implements TreeManager {
             }
 
             RigidBodyHandle handle = system.getPhysicsHandle(subLevel);
+            if (!handle.isValid()) {
+                continue;
+            }
 
             Vector3d linearVel = handle.getLinearVelocity(new Vector3d());
             Vector3d angularVel = handle.getAngularVelocity(new Vector3d());
@@ -84,7 +87,7 @@ public class ServerTreeManager extends SavedData implements TreeManager {
 
         for (TreeData tree : this.trees.values()) {
             SubLevel subLevel = tree.getSubLevel(this.level);
-            if(subLevel == null) {
+            if(subLevel == null || subLevel.isRemoved()) {
                 continue;
             }
 

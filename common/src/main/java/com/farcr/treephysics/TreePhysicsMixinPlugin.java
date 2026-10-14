@@ -21,7 +21,8 @@ public class TreePhysicsMixinPlugin implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-        if (mixinClassName.startsWith("com.farcr.treephysics.mixin.compatibility.")) {
+        if (mixinClassName.startsWith("com.farcr.treephysics.mixin.compatibility.") ||
+                mixinClassName.startsWith("com.farcr.treephysics.neoforge.mixin.compatibility.")) {
             final String[] parts = mixinClassName.split("\\.");
             if (parts.length < 5) {
                 return true;
